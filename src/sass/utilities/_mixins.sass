@@ -1,0 +1,57 @@
+
+/*
+ * FONT SIZES EM / REM
+ */
+
+@function pxtoem($target, $context: $base-font-size)
+  @return ($target / $context) + 0em
+
+
+
+// not realy working...
+@function pxtorem($target)
+  @return ($target / $base-font-size) + 0em
+
+@mixin pxtorem($property, $target) 
+  #{$property}: ($target / $base-font-size) + 0rem
+  #{$property}: $target + px
+
+
+
+/*
+ * FLEXBOX
+ */
+
+@mixin flexbox() 
+  display: -webkit-box
+  display: -moz-box
+  display: -ms-flexbox
+  display: -webkit-flex
+  display: flex
+
+
+@mixin flex($values) 
+  -webkit-box-flex: $values
+  -moz-box-flex:  $values
+  -webkit-flex:  $values
+  -ms-flex:  $values
+  flex:  $values
+
+
+@mixin order($val) 
+  -webkit-box-ordinal-group: $val 
+  -moz-box-ordinal-group: $val   
+  -ms-flex-order: $val  
+  -webkit-order: $val
+  order: $val
+
+// utilisation de FLEXBOX
+
+// .wrapper
+//   @include flexbox()
+
+// .item
+//   @include flex(1 200px)
+//   @include order(2)
+
+

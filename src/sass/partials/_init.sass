@@ -1,0 +1,53 @@
+
+*, *:before, *:after
+    +box-sizing(border-box)
+
+
+// défintion des styles globaux des textes
+body 
+    font-family: $font-main
+    font-size: $base-font-size
+    background-color: #fff
+    color: $text-color
+    
+
+/* selection */    
+::-moz-selection
+    background: $hightlight
+    text-shadow: none
+    color: #fff
+
+::selection 
+    background: $hightlight
+    text-shadow: none
+    color: #fff
+
+
+
+.link_classic
+    &, &:visited 
+        color: #fff
+        text-decoration: none
+        +single-transition(color, .3s)
+
+    &:hover, &:active 
+        color: #fff
+        text-decoration: none
+        +single-transition(color, .3s)
+
+
+
+
+//typos de base
+
+$titles-styles: h1 2em bold normal, h2 1.5em bold normal, h3 1.2em bold normal, h4 1.1em normal italic, h5 1em normal italic, h6 .9em normal italic
+
+@each $value in $titles-styles
+    #{nth($value, 1)}
+        font-size: nth($value, 2)
+        font-weight: nth($value, 3)
+        font-style: nth($value, 4)
+
+
+
+

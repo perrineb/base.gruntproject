@@ -1,0 +1,695 @@
+$path-to-images: "../js/jquery/plugins/select2/"
+
+$font-family: $main-regular      // sans-serif
+$font-size: 1.2em
+
+$display-search: inline-block  // none | inline-block (default)
+
+$result-highligthed-color: $main-color  // #3875D7
+
+$box-border-color: #aaa
+$box-border-highligthed-color: $main-color-lighter   // #5897FB
+
+$drop-text-color: #000
+$drop-bg: #fff
+
+$choice-text-color: #444
+$choice-bg-from: #eeeeee
+$choice-bg-to: #fff
+
+$box-text-highligthed-color: #fff
+
+$box-border-radius: 0px   // 4px / .25em
+
+$arrow-border-width: 0px   // 1px
+$arrow-border-color: #aaa
+$arrow-bg-from: #ffffff   // #cccccc - sur 6 pour compatiblité ie
+$arrow-bg-to: #ffffff   // #eeeeee - sur 6 pour compatiblité ie
+
+
+
+
+
+
+.select2-container 
+    margin: 0
+    position: relative
+    display: inline-block
+    /* inline-block for ie7 */
+    zoom: 1
+    *display: inline
+    vertical-align: middle
+
+
+.select2-container, .select2-drop, .select2-search, .select2-search input 
+    
+    // Force border-box so that % widths fit the parent
+    // container without overlap because of margin/padding.
+
+    // More Info : http://www.quirksmode.org/css/box.html
+    
+    -webkit-box-sizing: border-box /* webkit */
+    -moz-box-sizing: border-box /* firefox */
+    box-sizing: border-box /* css3 */
+
+    font-family: $font-family
+    font-size: $font-size
+
+
+.select2-container 
+    .select2-choice 
+        display: block
+        height:  1.625em // 26px
+        padding: 0 0 0 .5em // 0 0 0 8px
+        overflow: hidden
+        position: relative
+
+        border: 1px solid $box-border-color
+        white-space: nowrap
+        line-height: 1.625em // 26px
+        color: $choice-text-color
+        text-decoration: none
+
+        +border-radius($box-border-radius)
+
+        background-clip: padding-box
+
+        -webkit-touch-callout: none
+        -webkit-user-select: none
+        -khtml-user-select: none
+        -moz-user-select: none
+        -ms-user-select: none
+        user-select: none
+
+        background-color: #fff
+        background-image: -webkit-gradient(linear, left bottom, left top, color-stop(0, $choice-bg-from), color-stop(0.5, $choice-bg-to))
+        background-image: -webkit-linear-gradient(center bottom, $choice-bg-from 0%, $choice-bg-to 50%)
+        background-image: -moz-linear-gradient(center bottom, $choice-bg-from 0%, $choice-bg-to 50%)
+        background-image: -o-linear-gradient(bottom, $choice-bg-from 0%, $choice-bg-to 50%)
+        background-image: -ms-linear-gradient(top, $choice-bg-from 0%, $choice-bg-to 50%)
+        filter: progid:DXImageTransform.Microsoft.gradient(startColorstr = '$choice-bg-to', endColorstr = '$choice-bg-from', GradientType = 0)
+        background-image: linear-gradient(top, $choice-bg-from 0%, $choice-bg-to 50%)
+
+
+    &.select2-drop-above .select2-choice 
+        border-bottom-color: $box-border-color
+
+        border-radius: 0 0 $box-border-radius $box-border-radius
+
+        background-image: -webkit-gradient(linear, left bottom, left top, color-stop(0, $choice-bg-from), color-stop(0.9, $choice-bg-to))
+        background-image: -webkit-linear-gradient(center bottom, $choice-bg-from 0%, $choice-bg-to 90%)
+        background-image: -moz-linear-gradient(center bottom, $choice-bg-from 0%, $choice-bg-to 90%)
+        background-image: -o-linear-gradient(bottom, $choice-bg-from 0%, $choice-bg-to 90%)
+        background-image: -ms-linear-gradient(top, $choice-bg-from 0%, $choice-bg-to 90%)
+        filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='$choice-bg-to', endColorstr='$choice-bg-from', GradientType=0)
+        background-image: linear-gradient(top, $choice-bg-from 0%, $choice-bg-to 90%)
+
+
+    &.select2-allowclear .select2-choice .select2-chosen 
+        margin-right: 2.625em  // 42px
+
+
+    .select2-choice
+        > .select2-chosen 
+            margin-right: 1.625em  // 26px
+            display: block
+            overflow: hidden
+
+            white-space: nowrap
+
+            text-overflow: ellipsis
+
+
+        abbr 
+            display: none
+            width: 12px
+            height: 12px
+            position: absolute
+            right: 24px
+            top: 8px
+
+            font-size: 1px
+            text-decoration: none
+
+            border: 0
+            background: url('#{$path-to-images}select2.png') right top no-repeat
+            cursor: pointer
+            outline: 0
+
+
+    &.select2-allowclear .select2-choice abbr 
+        display: inline-block
+
+
+    .select2-choice abbr:hover 
+        background-position: right -11px
+        cursor: pointer
+
+
+.select2-drop-mask 
+    border: 0
+    margin: 0
+    padding: 0
+    position: fixed
+    left: 0
+    top: 0
+    min-height: 100%
+    min-width: 100%
+    height: auto
+    width: auto
+    opacity: 0
+    z-index: 9998
+    /* styles required for IE to work */
+    background-color: #fff
+    opacity: 0
+    filter: alpha(opacity=0)
+
+
+.select2-drop 
+    width: 100%
+    margin-top: -1px
+    position: absolute
+    z-index: 9999
+    top: 100%
+
+    background: $drop-bg
+    color: $drop-text-color
+    border: 1px solid $box-border-color
+    border-top: 0
+
+    border-radius: 0 0 $box-border-radius $box-border-radius
+
+    -webkit-box-shadow: 0 4px 5px rgba(0, 0, 0, .15)
+    box-shadow: 0 4px 5px rgba(0, 0, 0, .15)
+
+
+.select2-drop-auto-width 
+    border-top: 1px solid $box-border-color
+    width: auto
+
+
+    .select2-search 
+        padding-top: .25em // 4px
+
+
+.select2-drop.select2-drop-above 
+    margin-top: 1px
+    border-top: 1px solid $box-border-color
+    border-bottom: 0
+
+    border-radius: $box-border-radius $box-border-radius 0 0
+
+    -webkit-box-shadow: 0 -4px 5px rgba(0, 0, 0, .15)
+    box-shadow: 0 -4px 5px rgba(0, 0, 0, .15)
+
+
+.select2-drop-active 
+    border: 1px solid $box-border-highligthed-color
+    border-top: none
+
+
+.select2-drop.select2-drop-above.select2-drop-active 
+    border-top: 1px solid $box-border-highligthed-color
+
+
+.select2-container 
+    .select2-choice 
+        .select2-arrow 
+            display: inline-block
+            width: 18px
+            height: 100%
+            position: absolute
+            right: 0
+            top: 0
+
+            border-left: $arrow-border-width solid $arrow-border-color
+            border-radius: 0 $box-border-radius $box-border-radius 0
+
+            background-clip: padding-box
+
+            background: $arrow-bg-from
+            background-image: -webkit-gradient(linear, left bottom, left top, color-stop(0, $arrow-bg-from), color-stop(0.6, $arrow-bg-to))
+            background-image: -webkit-linear-gradient(center bottom, $arrow-bg-from 0%, $arrow-bg-to 60%)
+            background-image: -moz-linear-gradient(center bottom, $arrow-bg-from 0%, $arrow-bg-to 60%)
+            background-image: -o-linear-gradient(bottom, $arrow-bg-from 0%, $arrow-bg-to 60%)
+            background-image: -ms-linear-gradient(top, $arrow-bg-from 0%, $arrow-bg-to 60%)
+            filter: progid:DXImageTransform.Microsoft.gradient(startColorstr = '$arrow-bg-to', endColorstr = '$arrow-bg-from', GradientType = 0)
+            background-image: linear-gradient(top, $arrow-bg-from 0%, $arrow-bg-to 60%)
+
+
+        .select2-arrow b 
+            display: block
+            width: 100%
+            height: 100%
+            background: url('#{$path-to-images}select2.png') no-repeat 0 1px
+
+
+.select2-search 
+    display: $display-search
+    width: 100%
+    min-height: 1.625em // 26px
+    margin: 0
+    padding-left: .25em  //4px
+    padding-right: .25em //4px
+
+    position: relative
+    z-index: 10000
+
+    white-space: nowrap
+
+
+    input 
+        width: 100%
+        height: auto !important
+        min-height:  1.625em // 26px
+        padding: .25em 1.25em .25em .3125em  //4px 20px 4px 5px
+        margin: 0
+
+        outline: 0
+        font-family: $font-family
+        font-size: 1em
+
+        border: 1px solid $box-border-color
+        border-radius: 0
+
+        -webkit-box-shadow: none
+        box-shadow: none
+
+        background: #fff url('#{$path-to-images}select2.png') no-repeat 100% -22px
+        background: url('#{$path-to-images}select2.png') no-repeat 100% -22px, -webkit-gradient(linear, left bottom, left top, color-stop(0.85, #fff), color-stop(0.99, #eee))
+        background: url('#{$path-to-images}select2.png') no-repeat 100% -22px, -webkit-linear-gradient(center bottom, #fff 85%, #eee 99%)
+        background: url('#{$path-to-images}select2.png') no-repeat 100% -22px, -moz-linear-gradient(center bottom, #fff 85%, #eee 99%)
+        background: url('#{$path-to-images}select2.png') no-repeat 100% -22px, -o-linear-gradient(bottom, #fff 85%, #eee 99%)
+        background: url('#{$path-to-images}select2.png') no-repeat 100% -22px, -ms-linear-gradient(top, #fff 85%, #eee 99%)
+        background: url('#{$path-to-images}select2.png') no-repeat 100% -22px, linear-gradient(top, #fff 85%, #eee 99%)
+
+
+.select2-drop.select2-drop-above .select2-search input 
+    margin-top: .25em  //4px
+
+
+.select2-search input.select2-active 
+    background: #fff url('#{$path-to-images}select2-spinner.gif') no-repeat 100%
+    background: url('#{$path-to-images}select2-spinner.gif') no-repeat 100%, -webkit-gradient(linear, left bottom, left top, color-stop(0.85, #fff), color-stop(0.99, #eee))
+    background: url('#{$path-to-images}select2-spinner.gif') no-repeat 100%, -webkit-linear-gradient(center bottom, #fff 85%, #eee 99%)
+    background: url('#{$path-to-images}select2-spinner.gif') no-repeat 100%, -moz-linear-gradient(center bottom, #fff 85%, #eee 99%)
+    background: url('#{$path-to-images}select2-spinner.gif') no-repeat 100%, -o-linear-gradient(bottom, #fff 85%, #eee 99%)
+    background: url('#{$path-to-images}select2-spinner.gif') no-repeat 100%, -ms-linear-gradient(top, #fff 85%, #eee 99%)
+    background: url('#{$path-to-images}select2-spinner.gif') no-repeat 100%, linear-gradient(top, #fff 85%, #eee 99%)
+
+
+.select2-container-active 
+    .select2-choice, .select2-choices 
+        border: 1px solid $box-border-highligthed-color
+        outline: none
+
+        -webkit-box-shadow: 0 0 5px rgba(0, 0, 0, .3)
+        box-shadow: 0 0 5px rgba(0, 0, 0, .3)
+
+
+.select2-dropdown-open 
+    .select2-choice 
+        border-bottom-color: transparent
+        -webkit-box-shadow: 0 1px 0 #fff inset
+        box-shadow: 0 1px 0 #fff inset
+
+        border-bottom-left-radius: 0
+        border-bottom-right-radius: 0
+
+        background-color: #eee
+        background-image: -webkit-gradient(linear, left bottom, left top, color-stop(0, #fff), color-stop(0.5, #eee))
+        background-image: -webkit-linear-gradient(center bottom, #fff 0%, #eee 50%)
+        background-image: -moz-linear-gradient(center bottom, #fff 0%, #eee 50%)
+        background-image: -o-linear-gradient(bottom, #fff 0%, #eee 50%)
+        background-image: -ms-linear-gradient(top, #fff 0%, #eee 50%)
+        filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#eeeeee', endColorstr='#ffffff', GradientType=0)
+        background-image: linear-gradient(top, #fff 0%, #eee 50%)
+
+
+.select2-dropdown-open.select2-drop-above 
+    .select2-choice, .select2-choices 
+        border: 1px solid $box-border-highligthed-color
+        border-top-color: transparent
+
+        background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #fff), color-stop(0.5, #eee))
+        background-image: -webkit-linear-gradient(center top, #fff 0%, #eee 50%)
+        background-image: -moz-linear-gradient(center top, #fff 0%, #eee 50%)
+        background-image: -o-linear-gradient(top, #fff 0%, #eee 50%)
+        background-image: -ms-linear-gradient(bottom, #fff 0%, #eee 50%)
+        filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#eeeeee', endColorstr='#ffffff', GradientType=0)
+        background-image: linear-gradient(bottom, #fff 0%, #eee 50%)
+
+
+.select2-dropdown-open .select2-choice .select2-arrow 
+    background: transparent
+    border-left: none
+    filter: none
+
+    b 
+        background-position: -18px 1px
+
+
+/* results */
+.select2-results 
+    max-height: 12.5em  // 200px
+    padding: 0 0 0 .25em   //0 0 0 4px
+    margin: .25em .25em .25em 0 // 4px 4px 4px 0
+    position: relative
+    overflow-x: hidden
+    overflow-y: auto
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0)
+
+
+    ul.select2-result-sub 
+        margin: 0
+        padding-left: 0
+
+        > li .select2-result-label 
+            padding-left: 1.25em   //20px 
+
+        ul.select2-result-sub 
+            > li .select2-result-label  
+                padding-left: 2.5em  // 40px 
+
+                ul.select2-result-sub 
+                    > li .select2-result-label  
+                        padding-left: 3.75em  //60px 
+
+                    ul.select2-result-sub 
+                        > li .select2-result-label  
+                            padding-left: 5em  //80px 
+            
+                        ul.select2-result-sub
+                            > li .select2-result-label  
+                                padding-left: 6.25em   //100px 
+
+                            ul.select2-result-sub 
+                                > li .select2-result-label  
+                                    padding-left: 6.875em  //110px 
+
+                                ul.select2-result-sub 
+                                    > li .select2-result-label  
+                                        padding-left: 7.5em  //120px 
+
+
+    li 
+        list-style: none
+        display: list-item
+        background-image: none
+
+
+        &.select2-result-with-children > .select2-result-label 
+            font-weight: bold
+
+
+    .select2-result-label 
+        padding: .1875em .4375em .25em // 3px 7px 4px
+        margin: 0
+        cursor: pointer
+
+        min-height: 1em
+
+        -webkit-touch-callout: none
+        -webkit-user-select: none
+        -khtml-user-select: none
+        -moz-user-select: none
+        -ms-user-select: none
+        user-select: none
+
+
+    .select2-highlighted 
+        background: $result-highligthed-color
+        color: $box-text-highligthed-color
+
+
+    li em 
+        background: #feffde
+        font-style: normal
+
+
+    .select2-highlighted 
+        em 
+            background: transparent
+
+        ul 
+            background: #fff
+            color: $drop-text-color
+
+
+
+    .select2-no-results, .select2-searching, .select2-selection-limit 
+        background: #f4f4f4
+        display: list-item
+
+
+    
+    // disabled look for disabled choices in the results dropdown
+    .select2-disabled
+        &.select2-highlighted 
+            color: #666
+            background: #f4f4f4
+            display: list-item
+            cursor: default
+
+        &
+            background: #f4f4f4
+            display: list-item
+            cursor: default
+
+
+    .select2-selected 
+        display: none
+
+
+.select2-more-results
+    &.select2-active 
+        background: #f4f4f4 url('#{$path-to-images}select2-spinner.gif') no-repeat 100%
+
+    &
+        background: #f4f4f4
+        display: list-item
+
+
+/* disabled styles */
+
+.select2-container.select2-container-disabled .select2-choice 
+    background-color: #f4f4f4
+    background-image: none
+    border: 1px solid #ddd
+    cursor: default
+
+
+    .select2-arrow 
+        background-color: #f4f4f4
+        background-image: none
+        border-left: 0
+
+
+    abbr 
+        display: none
+
+
+
+/* multiselect */
+
+.select2-container-multi .select2-choices 
+    height: auto !important
+    height: 1%
+    margin: 0
+    padding: 0
+    position: relative
+
+    border: 1px solid $box-border-color
+    cursor: text
+    overflow: hidden
+
+    background-color: #fff
+    background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, color-stop(1%, #eee), color-stop(15%, #fff))
+    background-image: -webkit-linear-gradient(top, #eee 1%, #fff 15%)
+    background-image: -moz-linear-gradient(top, #eee 1%, #fff 15%)
+    background-image: -o-linear-gradient(top, #eee 1%, #fff 15%)
+    background-image: -ms-linear-gradient(top, #eee 1%, #fff 15%)
+    background-image: linear-gradient(top, #eee 1%, #fff 15%)
+
+
+.select2-locked 
+    padding: .1875em .3125em .1875em .3125em !important  // 3px 5px 3px 5px !important
+
+
+.select2-container-multi 
+    .select2-choices 
+        min-height: 1.625em  // 26px
+
+
+    &.select2-container-active .select2-choices 
+        border: 1px solid $box-border-highligthed-color
+        outline: none
+
+        -webkit-box-shadow: 0 0 5px rgba(0, 0, 0, .3)
+        box-shadow: 0 0 5px rgba(0, 0, 0, .3)
+
+    .select2-choices 
+        li 
+            float: left
+            list-style: none
+
+        .select2-search-field 
+            margin: 0
+            padding: 0
+            white-space: nowrap
+
+
+            input 
+                padding: .3125em //5px
+                margin: .0625em 0 // 1px 0
+
+                font-family: $font-family
+                font-size: 100%
+                color: #666
+                outline: 0
+                border: 0
+                -webkit-box-shadow: none
+                box-shadow: none
+                background: transparent !important
+
+
+                &.select2-active 
+                    background: #fff url('#{$path-to-images}select2-spinner.gif') no-repeat 100% !important
+
+
+.select2-default 
+    color: #999 !important
+
+
+.select2-container-multi .select2-choices 
+    .select2-search-choice 
+        padding: .1875em .3125em .1875em 1.125em // 3px 5px 3px 18px
+        margin: .1875em 0 .1875em .3125em  // 3px 0 3px 5px
+        position: relative
+
+        line-height: .8125em  //13px
+        color: #333
+        cursor: default
+        border: 1px solid $box-border-color
+
+        border-radius: .1875em  //3px
+
+        -webkit-box-shadow: 0 0 2px #fff inset, 0 1px 0 rgba(0, 0, 0, 0.05)
+        box-shadow: 0 0 2px #fff inset, 0 1px 0 rgba(0, 0, 0, 0.05)
+
+        background-clip: padding-box
+
+        -webkit-touch-callout: none
+        -webkit-user-select: none
+        -khtml-user-select: none
+        -moz-user-select: none
+        -ms-user-select: none
+        user-select: none
+
+        background-color: #e4e4e4
+        filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#eeeeee', endColorstr='#f4f4f4', GradientType=0)
+        background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, color-stop(20%, #f4f4f4), color-stop(50%, #f0f0f0), color-stop(52%, #e8e8e8), color-stop(100%, #eee))
+        background-image: -webkit-linear-gradient(top, #f4f4f4 20%, #f0f0f0 50%, #e8e8e8 52%, #eee 100%)
+        background-image: -moz-linear-gradient(top, #f4f4f4 20%, #f0f0f0 50%, #e8e8e8 52%, #eee 100%)
+        background-image: -o-linear-gradient(top, #f4f4f4 20%, #f0f0f0 50%, #e8e8e8 52%, #eee 100%)
+        background-image: -ms-linear-gradient(top, #f4f4f4 20%, #f0f0f0 50%, #e8e8e8 52%, #eee 100%)
+        background-image: linear-gradient(top, #f4f4f4 20%, #f0f0f0 50%, #e8e8e8 52%, #eee 100%)
+
+        .select2-chosen 
+            cursor: default
+
+    .select2-search-choice-focus 
+        background: #d4d4d4
+
+
+.select2-search-choice-close 
+    display: block
+    width: 12px
+    height: 13px
+    position: absolute
+    right: 3px
+    top: 4px
+
+    font-size: 1px
+    outline: none
+    background: url('#{$path-to-images}select2.png') right top no-repeat
+
+
+.select2-container-multi 
+    .select2-search-choice-close 
+        left: .1875em  //3px
+
+
+    .select2-choices 
+        .select2-search-choice .select2-search-choice-close:hover 
+            background-position: right -11px
+
+        .select2-search-choice-focus .select2-search-choice-close 
+            background-position: right -11px
+
+
+/* disabled styles */
+.select2-container-multi.select2-container-disabled .select2-choices 
+    background-color: #f4f4f4
+    background-image: none
+    border: 1px solid #ddd
+    cursor: default
+
+
+    .select2-search-choice 
+        padding: .1875em .3125em .1875em .3125em   // 3px 5px 3px 5px
+        border: 1px solid #ddd
+        background-image: none
+        background-color: #f4f4f4
+
+
+        .select2-search-choice-close     
+            display: none
+            background: none
+
+/* end multiselect */
+
+
+.select2-result-selectable, .select2-result-unselectable
+    .select2-match
+        text-decoration: underline
+
+
+.select2-offscreen, .select2-offscreen:focus 
+    clip: rect(0 0 0 0) !important
+    width: 1px !important
+    height: 1px !important
+    border: 0 !important
+    margin: 0 !important
+    padding: 0 !important
+    overflow: hidden !important
+    position: absolute !important
+    outline: 0 !important
+    left: 0px !important
+    top: 0px !important
+
+
+.select2-display-none 
+    display: none
+
+
+.select2-measure-scrollbar 
+    position: absolute
+    top: -10000px
+    left: -10000px
+    width: 100px
+    height: 100px
+    overflow: scroll
+
+/* Retina-ize icons */
+
+@media only screen and (-webkit-min-device-pixel-ratio: 1.5), only screen and (min-resolution: 144dpi)  
+    .select2-search input, .select2-search-choice-close, .select2-container .select2-choice abbr, .select2-container .select2-choice .select2-arrow b 
+        background-image: url('#{$path-to-images}select2x2.png') !important
+        background-repeat: no-repeat !important
+        background-size: 60px 40px !important
+  
+    .select2-search input 
+        background-position: 100% -21px !important
+  
+

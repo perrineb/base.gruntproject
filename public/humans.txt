@@ -1,0 +1,16 @@
+# humanstxt.org/
+# The humans responsible & technology colophon
+
+# TEAM
+
+    Emmanuel Roy / Semiodesign -- design -- https://twitter.com/EmmanuelRoy
+    Perrine Bocquin / Semiodesign -- Front end dev
+
+# THANKS
+
+    HTML5 Boilerplate !
+
+# TECHNOLOGY COLOPHON
+
+    HTML5, CSS3
+    jQuery, Modernizr
