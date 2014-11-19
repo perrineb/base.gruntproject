@@ -1,0 +1,6 @@
+.DS_Store
+public/img/*
+public/js/*
+public/css/*
+.sass-cache
+npm-debug.log
