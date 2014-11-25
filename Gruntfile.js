@@ -12,6 +12,9 @@ config = {
 };
 
 module.exports = function (grunt) {
+  
+  timestamp = new Date();
+  
   require('load-grunt-tasks')(grunt);
   require('matchdep').filterDev('grunt-*').forEach(grunt.loadNpmTasks);
 
@@ -75,22 +78,44 @@ module.exports = function (grunt) {
                 src: ['**/*.{png,jpg,gif}'],
                 dest: 'public/'
             }]
+        },
+        deliver: {
+            options: {
+                optimizationLevel: 7,
+                progressive: true
+            },
+            files: [{
+                expand: true,
+                cwd: 'src/',
+                src: ['**/*.{png,jpg,gif}'],
+                dest: 'deliver/files/'
+            }]
         }
     },
 
-    // //  copy fonts
-    // copy: {
-    //   main: {
-    //     files: [
-    //       // includes files within path and its sub-directories
-    //       { 
-    //         expand: true, 
-    //         src: ['src/fonts/**'], 
-    //         dest: 'public/fonts/'
-    //       },
-    //     ],
-    //   },
-    // },
+
+    copy: {
+      deliver: {
+        files: [
+          // includes files within path and its sub-directories
+          { 
+            expand: false, 
+            src: ['public/fonts/**'], 
+            dest: 'deliver/files/fonts/'
+          },
+          { 
+            expand: false, 
+            src: ['public/index.html'], 
+            dest: 'deliver/files/index.html'
+          },
+          { 
+            expand: false, 
+            src: ['public/js/lib/modernizr-custom.js'], 
+            dest: 'deliver/files/js/lib/modernizr-custom.js'
+          }
+        ],
+      },
+    },
 
 
     modernizr: {
@@ -223,13 +248,28 @@ module.exports = function (grunt) {
           {src: 'public/js/javascripts.js', dest: 'public/js/javascripts.min.js'}
         ],
       },
+      deliver: {
+        files: [
+          {src: 'public/js/application.js', dest: 'deliver/files/js/application.min.js'},
+          {src: 'public/js/lib.js', dest: 'deliver/files/js/lib.min.js'},
+          {src: 'public/js/ie.js', dest: 'deliver/files/js/ie.min.js'},
+          {src: 'public/js/javascripts.js', dest: 'deliver/files/js/javascripts.min.js'}
+        ],
+      },
     },
+
 
     cssmin: {
         combine: {
             files: {
                 'public/css/main.min.css': ['public/css/main.css'],
                 // 'public/css/libs.min.css': ['public/css/libs.css']
+            }
+        },
+        deliver: {
+            files: {
+                'deliver/files/css/main.min.css': ['public/css/main.css'],
+                'deliver/files/css/libs.min.css': ['public/css/libs.css']
             }
         }
     },
@@ -252,7 +292,20 @@ module.exports = function (grunt) {
           }
         }
       }
+    },
+
+
+    compress: {
+      deliver: {
+        options: {
+          archive: 'deliver/zip/deliver'+ timestamp.getFullYear() + timestamp.getMonth() + timestamp.getDate() + timestamp.getHours() + timestamp.getMinutes() + timestamp.getSeconds() +'.zip'
+        },
+        files: [
+          {src: ['deliver/files/**']}  // includes files in path and its subdirs
+        ]
+      }
     }
+
   });
 
  
@@ -263,7 +316,8 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-concat-css');
   grunt.loadNpmTasks("grunt-modernizr");
-  // grunt.loadNpmTasks('grunt-contrib-copy');
+  grunt.loadNpmTasks('grunt-contrib-copy');
+  grunt.loadNpmTasks('grunt-contrib-compress');
 
   grunt.registerTask('server', function (target) {
     if (target === 'dist') {
@@ -299,5 +353,14 @@ module.exports = function (grunt) {
     'concat:alljs', 
     'uglify:dist', 
     'imagemin:dist'
+    ]);
+
+  // le index.html doit avoir le lien vers les fichiers minifiés pour que le résultat fonctionne
+  grunt.registerTask('deliver', [
+    'copy:deliver',
+    'cssmin:deliver',
+    'uglify:deliver',
+    'imagemin:deliver',
+    'compress:deliver'
     ]);
 }
