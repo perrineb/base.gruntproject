@@ -3,6 +3,6 @@ node_modules/*
 public/img/*
 public/js/*
 public/css/*
-deliver/*
+dist/*
 .sass-cache
 npm-debug.log

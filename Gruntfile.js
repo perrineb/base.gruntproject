@@ -67,7 +67,7 @@ module.exports = function (grunt) {
                 dest: 'public/'
             }]
         },
-        dist: {
+        build: {
             options: {
                 optimizationLevel: 4,
                 progressive: true
@@ -79,7 +79,7 @@ module.exports = function (grunt) {
                 dest: 'public/'
             }]
         },
-        deliver: {
+        dist: {
             options: {
                 optimizationLevel: 7,
                 progressive: true
@@ -88,30 +88,30 @@ module.exports = function (grunt) {
                 expand: true,
                 cwd: 'src/',
                 src: ['**/*.{png,jpg,gif}'],
-                dest: 'deliver/files/'
+                dest: 'dist/public/'
             }]
         }
     },
 
 
     copy: {
-      deliver: {
+      dist: {
         files: [
           // includes files within path and its sub-directories
           { 
             expand: false, 
             src: ['public/fonts/**'], 
-            dest: 'deliver/files/fonts/'
+            dest: 'dist/public/fonts/'
           },
           { 
             expand: false, 
             src: ['public/index.html'], 
-            dest: 'deliver/files/index.html'
+            dest: 'dist/public/index.html'
           },
           { 
             expand: false, 
             src: ['public/js/lib/modernizr-custom.js'], 
-            dest: 'deliver/files/js/lib/modernizr-custom.js'
+            dest: 'dist/public/js/lib/modernizr-custom.js'
           }
         ],
       },
@@ -240,22 +240,52 @@ module.exports = function (grunt) {
     },
 
     uglify: {
-      dist: {
+      build: {
         files: [
           {src: 'public/js/application.js', dest: 'public/js/application.min.js'},
           {src: 'public/js/lib.js', dest: 'public/js/lib.min.js'},
           {src: 'public/js/ie.js', dest: 'public/js/ie.min.js'},
-          {src: 'public/js/javascripts.js', dest: 'public/js/javascripts.min.js'}
+          // {src: 'public/js/javascripts.js', dest: 'public/js/javascripts.min.js'}
         ],
       },
-      deliver: {
+      dist: {
         files: [
-          {src: 'public/js/application.js', dest: 'deliver/files/js/application.min.js'},
-          {src: 'public/js/lib.js', dest: 'deliver/files/js/lib.min.js'},
-          {src: 'public/js/ie.js', dest: 'deliver/files/js/ie.min.js'},
-          {src: 'public/js/javascripts.js', dest: 'deliver/files/js/javascripts.min.js'}
+          {src: 'public/js/application.js', dest: 'dist/public/js/application.min.js'},
+          {src: 'public/js/lib.js', dest: 'dist/public/js/lib.min.js'},
+          {src: 'public/js/ie.js', dest: 'dist/public/js/ie.min.js'},
+          // {src: 'public/js/javascripts.js', dest: 'dist/public/js/javascripts.min.js'}
         ],
       },
+    },
+
+
+    // https://www.npmjs.org/package/grunt-replace
+    replace: {
+      dist: {
+        options: {
+          patterns: [
+            {
+              match : /css\/main\.css/g,
+              replacement: 'css/main.min.css'
+            },
+            {
+              match : /js\/application\.js/g,
+              replacement: 'js/application.min.js'
+            },
+            {
+              match : /js\/lib\.js/g,
+              replacement: 'js/lib.min.js'
+            },
+            {
+              match : /js\/ie\.js/g,
+              replacement: 'js/ie.min.js'
+            }
+          ]
+        },
+        files: [
+          {expand: false, flatten: false, src: ['public/index.html'], dest: 'dist/public/index.html'}
+        ]
+      }
     },
 
 
@@ -266,10 +296,10 @@ module.exports = function (grunt) {
                 // 'public/css/libs.min.css': ['public/css/libs.css']
             }
         },
-        deliver: {
+        dist: {
             files: {
-                'deliver/files/css/main.min.css': ['public/css/main.css'],
-                'deliver/files/css/libs.min.css': ['public/css/libs.css']
+                'dist/public/css/main.min.css': ['public/css/main.css'],
+                // 'dist/public/css/libs.min.css': ['public/css/libs.css']
             }
         }
     },
@@ -296,12 +326,12 @@ module.exports = function (grunt) {
 
 
     compress: {
-      deliver: {
+      dist: {
         options: {
-          archive: 'deliver/zip/deliver'+ timestamp.getFullYear() + timestamp.getMonth() + timestamp.getDate() + timestamp.getHours() + timestamp.getMinutes() + timestamp.getSeconds() +'.zip'
+          archive: 'dist/zip/deliver_'+ timestamp.getFullYear() + timestamp.getMonth() + timestamp.getDate() + timestamp.getHours() + timestamp.getMinutes() + timestamp.getSeconds() +'.zip'
         },
         files: [
-          {src: ['deliver/files/**']}  // includes files in path and its subdirs
+          {src: ['dist/public/**']}  // includes files in path and its subdirs
         ]
       }
     }
@@ -345,22 +375,23 @@ module.exports = function (grunt) {
     // 'copy:main', 
     'compass', 
     'autoprefixer', 
-    'cssmin', 
+    'cssmin:combine', 
     'modernizr:dist', 
     'concat:ie', 
     'concat:js', 
     'concat:lib', 
     'concat:alljs', 
-    'uglify:dist', 
-    'imagemin:dist'
+    'uglify:build', 
+    'imagemin:build'
     ]);
 
   // le index.html doit avoir le lien vers les fichiers minifiés pour que le résultat fonctionne
-  grunt.registerTask('deliver', [
-    'copy:deliver',
-    'cssmin:deliver',
-    'uglify:deliver',
-    'imagemin:deliver',
-    'compress:deliver'
+  grunt.registerTask('dist', [
+    'copy:dist',
+    'cssmin:dist',
+    'uglify:dist',
+    'imagemin:dist',
+    'replace:dist',
+    'compress:dist',
     ]);
 }
