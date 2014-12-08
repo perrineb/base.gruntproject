@@ -6,17 +6,23 @@
 @function pxtoem($target, $context: $base-font-size)
   @return ($target / $context) + 0em
 
-
-
-// not realy working...
-@function pxtorem($target)
-  @return ($target / $base-font-size) + 0em
-
 @mixin pxtorem($property, $target) 
-  #{$property}: ($target / $base-font-size) + 0rem
-  #{$property}: $target + px
+  #{$property}: #{$target + px}
+  #{$property}: #{($target / $base-font-size) + rem}
 
 
+// alpha bg
+@mixin alpha-background($color, $opacity: 0.8, $fallback: false)
+  background-color: if($fallback, $fallback, $color)
+  background-color: rgba($color, $opacity)
+
+
+// Apply rules only for Retina Content
+// This mixin requires a content block as an argument. The styles in that content
+// will only be available to retina screens.
+@mixin retinafy()
+  @media (-webkit-min-device-pixel-ratio: 1.3), (-o-min-device-pixel-ratio: 2.6 / 2), (min--moz-device-pixel-ratio: 1.3), (min-device-pixel-ratio: 1.3), (min-resolution: 1.3dppx)
+    @content
 
 /*
  * FLEXBOX
@@ -53,5 +59,87 @@
 // .item
 //   @include flex(1 200px)
 //   @include order(2)
+
+
+// -----------------------------------------------------------------------------
+// CSS Arrow
+// -----------------------------------------------------------------------------
+
+@mixin css-arrow($side: top, $size: 20px, $offset: 0)
+  &:after
+    +size($size)
+  @if $side == top
+    &:after
+      bottom: auto
+      left: $offset
+      top: -(0.7 * $size) // 0.7 seems to be the number we need based on the current icon for this.
+  @if $side == right
+    &:after
+      left: auto
+      right: -(0.65 * $size) // 0.65 seems to be the number we need based on the current icon for this.
+      top: $offset
+  @if $side == bottom
+    &:after
+      bottom: -(0.6 * $size) // 0.6 seems to be the number we need based on the current icon for this.
+      left: $offset
+      top: auto
+  @if $side == left
+    &:after
+      left: -(0.6 * $size) // 0.6 seems to be the number we need based on the current icon for this.
+      right: auto
+      top: $offset
+
+// -----------------------------------------------------------------------------
+// Centralised CSS Arrow
+// -----------------------------------------------------------------------------
+
+@mixin css-arrow-central($side: top, $size: 28px, $offset: 0)
+  +css-arrow($side, $size, $offset)
+  @if $side == top
+    &:after
+      left: 50%
+      transform: translateX(-50%)
+  @if $side == bottom
+    &:after
+      left: 50%
+      transform: translateX(-50%)
+  @if $side == right
+    &:after
+      top: 50%
+      transform: translateY(-50%)
+  @if $side == left
+    &:after
+      top: 50%
+      transform: translateY(-50%)
+
+
+
+// Responsive Images using CSS Backgrounds.
+//
+// Using this mixin requires three versions of the image to be available at
+// 480,700 & 1600px widths.
+//
+// Using this mixin will also covering Retina & IE8 support.
+@mixin responsive-image($path: '', $extension: 'jpg')
+  $sizes: "480", "700", "1600"
+
+  @if $is-ie == false
+    @each $size in $sizes
+      $index: index($sizes, $size)
+
+      // Default is the smallest
+      @if $index == 1
+        background-image: url("#{image_path('#{$path}-#{nth($sizes, 1)}.#{$extension}')}")
+        +retinafy()
+          background-image: url("#{image_path('#{$path}-#{nth($sizes, 2)}.#{$extension}')}")
+      @else
+        // Set the min-width to the width below the current image size
+        @media only screen and (min-width: nth($sizes, $index - 1) + px)
+          background-image: url("#{image_path('#{$path}-#{nth($sizes, $index)}.jpg')}")
+
+  @else
+    // For IE7 & 8 we serve the 1024 version
+    // This presumes a lot about screen size
+    background-image: url("#{image_path('#{$path}-#{nth($sizes, 3)}.jpg')}")
 
 
